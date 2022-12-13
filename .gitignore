@@ -1,0 +1,23 @@
+# misc
+.DS_Store
+.idea
+.vscode
+.nova
+.fleet
+
+# dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# builds
+dist
+
+# tests
+coverage
+
+# logs
+*.log*
+
+# env
+.envrc

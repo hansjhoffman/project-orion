@@ -1,0 +1,46 @@
+{
+  "name": "orion",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "author": "@hansjhoffman",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.x"
+  },
+  "scripts": {
+    "build": "make build",
+    "clean": "make clean",
+    "compile": "make compile",
+    "format": "make format",
+    "lint": "make lint",
+    "lint:fix": "make lint-fix",
+    "prepare": "is-ci || husky install",
+    "run": "make run"
+  },
+  "dependencies": {
+    "axios": "^1.2.1",
+    "fp-ts": "^2.13.1",
+    "io-ts": "^2.2.20",
+    "ts-pattern": "^4.0.6"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.14",
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.46.1",
+    "esbuild": "^0.16.4",
+    "eslint": "^8.29.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.2",
+    "is-ci": "^3.0.1",
+    "lint-staged": "^13.1.0",
+    "prettier": "^2.8.1",
+    "typescript": "^4.9.4"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}
