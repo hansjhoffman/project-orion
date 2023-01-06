@@ -1,139 +1,49 @@
-import axios from "axios";
-import * as E from "fp-ts/Either";
 import * as RTE from "fp-ts/ReaderTaskEither";
-import * as TE from "fp-ts/TaskEither";
 import { pipe } from "fp-ts/function";
-import { failure } from "io-ts/lib/PathReporter";
 
-import { authCodec, usersCodec, User, Environment, environmentsCodec } from "./codecs";
-import { HttpClientEnv, HttpError } from "./types";
+import {
+  createTokenCodec,
+  decodeWithCodec,
+  getEnvironmentsCodec,
+  getUsersCodec,
+  User,
+  Environment,
+} from "./decode";
+import { HttpJsonError } from "./httpError";
+import { getJson, postJson, AppEnv } from "./httpClient";
 
 export const createToken = (input: {
   clientId: string;
   secret: string;
-}): RTE.ReaderTaskEither<HttpClientEnv, HttpError, string> => {
+}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, string> => {
   return pipe(
-    RTE.ask<HttpClientEnv>(),
-    RTE.chain((env) => {
-      return RTE.fromTaskEither(
-        TE.tryCatch(
-          () => {
-            return axios({
-              method: "POST",
-              url: `https://${env.apiHost}/auth/access-token`,
-              data: {
-                clientId: input.clientId,
-                secret: input.secret,
-              },
-            });
-          },
-          (reason): HttpError => ({
-            _tag: "httpRequestError",
-            error: reason,
-          }),
-        ),
-      );
-    }),
-    RTE.chainW(({ data }) => {
-      return RTE.fromEither(
-        pipe(
-          authCodec.decode(data),
-          E.map(({ data }) => data.accessToken),
-          E.mapLeft(
-            (errors): HttpError => ({
-              _tag: "httpDecodeError",
-              errors: failure(errors).join("\n"),
-            }),
-          ),
-        ),
-      );
-    }),
+    postJson(
+      "auth/access-token",
+      {
+        clientId: input.clientId,
+        secret: input.secret,
+      },
+      decodeWithCodec(createTokenCodec),
+    ),
+    RTE.map(({ data }) => data.accessToken),
   );
 };
 
-export const listUsers = (): RTE.ReaderTaskEither<
-  HttpClientEnv,
-  HttpError,
-  ReadonlyArray<User>
-> => {
+export const listUsers = (): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<User>> => {
   return pipe(
-    RTE.ask<HttpClientEnv>(),
-    RTE.chain((env) => {
-      return RTE.fromTaskEither(
-        TE.tryCatch(
-          () => {
-            return axios({
-              method: "GET",
-              url: `https://${env.apiHost}/users`,
-              headers: {
-                Authorization: `Bearer ${env.accessToken}`,
-              },
-            });
-          },
-          (reason): HttpError => ({
-            _tag: "httpRequestError",
-            error: reason,
-          }),
-        ),
-      );
-    }),
-    RTE.chainW(({ data }) => {
-      return RTE.fromEither(
-        pipe(
-          usersCodec.decode(data),
-          E.map(({ data }) => data),
-          E.mapLeft(
-            (errors): HttpError => ({
-              _tag: "httpDecodeError",
-              errors: failure(errors).join("\n"),
-            }),
-          ),
-        ),
-      );
-    }),
+    getJson("users", decodeWithCodec(getUsersCodec)),
+    RTE.map(({ data }) => data),
   );
 };
 
 export const listEnvironments = (): RTE.ReaderTaskEither<
-  HttpClientEnv,
-  HttpError,
+  AppEnv,
+  HttpJsonError,
   ReadonlyArray<Environment>
 > => {
   return pipe(
-    RTE.ask<HttpClientEnv>(),
-    RTE.chain((env) => {
-      return RTE.fromTaskEither(
-        TE.tryCatch(
-          () => {
-            return axios({
-              method: "GET",
-              url: `https://${env.apiHost}/environments`,
-              headers: {
-                Authorization: `Bearer ${env.accessToken}`,
-              },
-            });
-          },
-          (reason): HttpError => ({
-            _tag: "httpRequestError",
-            error: reason,
-          }),
-        ),
-      );
-    }),
-    RTE.chainW(({ data }) => {
-      return RTE.fromEither(
-        pipe(
-          environmentsCodec.decode(data),
-          E.map(({ data }) => data),
-          E.mapLeft(
-            (errors): HttpError => ({
-              _tag: "httpDecodeError",
-              errors: failure(errors).join("\n"),
-            }),
-          ),
-        ),
-      );
-    }),
+    getJson("environments", decodeWithCodec(getEnvironmentsCodec)),
+    RTE.map(({ data }) => data),
   );
 };
 
