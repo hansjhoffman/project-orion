@@ -1,18 +1,26 @@
-import { Env } from "./types";
+import * as Api from "./api";
+import { HttpClientEnv } from "./types";
 
-const main = () => {
+const main = async () => {
   try {
-    const env: Env = {
-      accessKeyId: process.env.FLATFILE_ACCESS_KEY_ID || "",
+    if (process.env.FLATFILE_CLIENT_ID === "" || process.env.FLATFILE_SECRET === "") {
+      throw "Ensure both FLATFILE_CLIENT_ID and FLATFILE_SECRET env vars are set";
+    }
+
+    const env: HttpClientEnv = {
       apiHost: process.env.FLATFILE_API_HOST || "",
-      secretAccessKey: process.env.FLATFILE_SECRET_ACCESS_KEY || "",
       accessToken: "",
-      teamId: process.env.FLATFILE_TEAM_ID || "",
     };
 
-    if (env.accessKeyId === "" || env.secretAccessKey === "") {
-      throw "Ensure both FLATFILE_ACCESS_KEY_ID and FLATFILE_SECRET_ACCESS_KEY env vars are set";
-    }
+    // const tokenPromise = Api.createToken({
+    //   clientId: process.env.FLATFILE_CLIENT_ID ?? "",
+    //   secret: process.env.FLATFILE_SECRET ?? "",
+    // })(env);
+
+    // const res = Api.listUsers()(env);
+    const res = Api.listEnvironments()(env);
+
+    console.log(await res());
   } catch (err) {
     console.error(`Error: ${err}!`);
   }
