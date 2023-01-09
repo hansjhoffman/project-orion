@@ -108,65 +108,29 @@ const constraintCodec = t.type({
   type: t.union([t.literal("required"), t.literal("unique")]),
 });
 
-export const fieldConfig = t.type({
-  key: t.string,
-  type: t.union([
-    t.literal("string"),
-    t.literal("number"),
-    t.literal("boolean"),
-    t.literal("date"),
-    t.literal("enum"),
-    t.literal("reference"),
-  ]),
-  label: t.union([t.string, t.undefined]),
-  description: t.union([t.string, t.undefined]),
-  constraints: t.union([t.array(constraintCodec), t.undefined]),
-  config: t.union([
-    t.type({
-      key: t.union([t.string, t.undefined]),
-      ref: t.union([t.string, t.undefined]),
-      relationship: t.union([t.literal("has-one"), t.literal("has-many"), t.undefined]),
-      options: t.union([t.array(t.type({ value: t.string, label: t.string })), t.undefined]),
-    }),
-    t.undefined,
-  ]),
-});
-
-export const sheetConfigCodec = t.type({
-  name: t.string,
-  description: t.union([t.string, t.undefined]),
-  slug: t.union([t.string, t.undefined]),
-  fields: t.readonlyArray(fieldConfig),
-});
-
-export type SheetConfig = t.TypeOf<typeof sheetConfigCodec>;
-
-export const sheetCodec = t.type({
-  id: t.string,
-  name: t.string,
-  config: sheetConfigCodec,
-});
-
-export const workbookCodec = t.type({
-  id: t.string,
-  name: t.string,
-  labels: t.array(t.string),
-  spaceId: t.string,
-  environmentId: t.string,
-  sheets: t.readonlyArray(sheetCodec),
-  //config: workbookConfigCodec,
-});
-
-export type Workbook = t.TypeOf<typeof workbookCodec>;
-
-export const listWorkbooksCodec = t.type({
-  data: t.readonlyArray(workbookCodec),
-});
-
-export const createWorkbookCodec = t.type({
-  data: workbookCodec,
-});
-
+// export const fieldConfig = t.type({
+//   key: t.string,
+//   type: t.union([
+//     t.literal("string"),
+//     t.literal("number"),
+//     t.literal("boolean"),
+//     t.literal("date"),
+//     t.literal("enum"),
+//     t.literal("reference"),
+//   ]),
+//   label: t.union([t.string, t.undefined]),
+//   description: t.union([t.string, t.undefined]),
+//   constraints: t.union([t.array(constraintCodec), t.undefined]),
+//   config: t.union([
+//     t.type({
+//       key: t.union([t.string, t.undefined]),
+//       ref: t.union([t.string, t.undefined]),
+//       relationship: t.union([t.literal("has-one"), t.literal("has-many"), t.undefined]),
+//       options: t.union([t.array(t.type({ value: t.string, label: t.string })), t.undefined]),
+//     }),
+//     t.undefined,
+//   ]),
+// });
 const BaseField = t.type({
   key: t.string,
   label: t.union([t.string, t.undefined]),
@@ -226,6 +190,43 @@ const LinkedField = t.intersection([
     }),
   }),
 ]);
+
+export const sheetConfigCodec = t.type({
+  name: t.string,
+  description: t.union([t.string, t.undefined]),
+  slug: t.union([t.string, t.undefined]),
+  fields: t.readonlyArray(
+    t.union([TextField, DateField, BooleanField, NumberField, CategoryField, LinkedField]),
+  ),
+});
+
+export type SheetConfig = t.TypeOf<typeof sheetConfigCodec>;
+
+export const sheetCodec = t.type({
+  id: t.string,
+  name: t.string,
+  config: sheetConfigCodec,
+});
+
+export const workbookCodec = t.type({
+  id: t.string,
+  name: t.string,
+  labels: t.array(t.string),
+  spaceId: t.string,
+  environmentId: t.string,
+  sheets: t.readonlyArray(sheetCodec),
+  //config: workbookConfigCodec,
+});
+
+export type Workbook = t.TypeOf<typeof workbookCodec>;
+
+export const listWorkbooksCodec = t.type({
+  data: t.readonlyArray(workbookCodec),
+});
+
+export const createWorkbookCodec = t.type({
+  data: workbookCodec,
+});
 
 export const createWorkbookEncoder = t.type({
   name: t.string,
