@@ -5,17 +5,20 @@ import * as Str from "fp-ts/string";
 
 import {
   Environment,
+  SheetConfig,
   Space,
   User,
   Workbook,
   createEnvironmentCodec,
   createSpaceCodec,
   createTokenCodec,
+  createWorkbookCodec,
   decodeWithCodec,
   listEnvironmentsCodec,
   listSpacesCodec,
   listUsersCodec,
   listWorkbooksCodec,
+  WorkbookInput,
 } from "./decode";
 import { HttpJsonError } from "./httpError";
 import { getJson, postJson, AppEnv } from "./httpClient";
@@ -27,8 +30,8 @@ const serializeParams = (params: Record<string, any>): string => {
 };
 
 export const createToken = (input: {
-  clientId: string;
-  secret: string;
+  clientId: Readonly<string>;
+  secret: Readonly<string>;
 }): RTE.ReaderTaskEither<AppEnv, HttpJsonError, string> => {
   return pipe(
     postJson(
@@ -62,8 +65,8 @@ export const listEnvironments = (): RTE.ReaderTaskEither<
 };
 
 export const createEnvironment = (input: {
-  name: string;
-  isProd: boolean;
+  name: Readonly<string>;
+  isProd: Readonly<boolean>;
 }): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Environment>> => {
   return pipe(
     postJson("environments", input, decodeWithCodec(createEnvironmentCodec)),
@@ -79,10 +82,10 @@ export const listSpaces = (): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readon
 };
 
 export const createSpace = (input: {
-  spaceConfigId: string;
-  environmentId: string;
-  primaryWorkbookId?: string;
-  name?: string;
+  spaceConfigId: Readonly<string>;
+  environmentId: Readonly<string>;
+  primaryWorkbookId?: Readonly<string>;
+  name?: Readonly<string>;
 }): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Space>> => {
   return pipe(
     postJson("spaces", input, decodeWithCodec(createSpaceCodec)),
@@ -91,7 +94,7 @@ export const createSpace = (input: {
 };
 
 export const listWorkbooks = (params: {
-  spaceId: string;
+  spaceId: Readonly<string>;
 }): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<Workbook>> => {
   const endpoint = Str.Monoid.concat("workbooks", serializeParams(params));
 
@@ -101,12 +104,20 @@ export const listWorkbooks = (params: {
   );
 };
 
-// export const createWorkbook = (input: {}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Space>> => {
-//   return pipe(
-//     postJson("workbooks", input, decodedWithCodec(createWorkbookCodec)),
-//     RTE.map(({ data }) => data),
-//   );
-// }
+// export const createWorkbook = (input: {
+//   name: Readonly<string>;
+//   spaceId: Readonly<string>;
+//   environmentId: Readonly<string>;
+//   sheets?: ReadonlyArray<SheetConfig>;
+// }): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Workbook>> => {
+export const createWorkbook = (
+  input: WorkbookInput,
+): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Workbook>> => {
+  return pipe(
+    postJson("workbooks", input, decodeWithCodec(createWorkbookCodec)),
+    RTE.map(({ data }) => data),
+  );
+};
 
 export const createAgent = () => {};
 export const listAgents = () => {};

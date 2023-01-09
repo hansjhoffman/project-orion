@@ -1,11 +1,12 @@
+import { AxiosError } from "axios";
 import { HttpDecodeError } from "./decode";
 
 export type HttpRequestError = {
   _tag: "httpRequestError";
-  error: unknown;
+  error: AxiosError;
 };
 
-export const mkHttpRequestError = (error: unknown): HttpRequestError => ({
+export const mkHttpRequestError = (error: AxiosError): HttpRequestError => ({
   _tag: "httpRequestError",
   error,
 });
