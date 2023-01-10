@@ -5,7 +5,6 @@ import * as Str from "fp-ts/string";
 
 import {
   Environment,
-  SheetConfig,
   Space,
   User,
   Workbook,
@@ -23,7 +22,7 @@ import {
 import { HttpJsonError } from "./httpError";
 import { getJson, postJson, AppEnv } from "./httpClient";
 
-const serializeParams = (params: Record<string, any>): string => {
+const _serializeParams = (params: Record<string, any>): string => {
   const f = <A>(k: string, a: A) => `?${k}=${a}`;
 
   return RR.collect(Str.Ord)(f)(params).join("");
@@ -96,7 +95,7 @@ export const createSpace = (input: {
 export const listWorkbooks = (params: {
   spaceId: Readonly<string>;
 }): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<Workbook>> => {
-  const endpoint = Str.Monoid.concat("workbooks", serializeParams(params));
+  const endpoint = Str.Monoid.concat("workbooks", _serializeParams(params));
 
   return pipe(
     getJson(endpoint, decodeWithCodec(listWorkbooksCodec)),
@@ -104,12 +103,6 @@ export const listWorkbooks = (params: {
   );
 };
 
-// export const createWorkbook = (input: {
-//   name: Readonly<string>;
-//   spaceId: Readonly<string>;
-//   environmentId: Readonly<string>;
-//   sheets?: ReadonlyArray<SheetConfig>;
-// }): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Workbook>> => {
 export const createWorkbook = (
   input: WorkbookInput,
 ): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Workbook>> => {
