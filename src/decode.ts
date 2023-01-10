@@ -34,6 +34,8 @@ export const UserId = new t.Type<string, string, unknown>(
   t.identity,
 );
 
+export type UserId = t.TypeOf<typeof UserId>;
+
 export const AccountId = new t.Type<string, string, unknown>(
   "AccountId",
   (input: unknown): input is string =>
@@ -44,6 +46,8 @@ export const AccountId = new t.Type<string, string, unknown>(
       : t.failure(input, context),
   t.identity,
 );
+
+export type AccountId = t.TypeOf<typeof AccountId>;
 
 export const EnvironmentId = new t.Type<string, string, unknown>(
   "EnvironmentId ",
@@ -56,6 +60,8 @@ export const EnvironmentId = new t.Type<string, string, unknown>(
   t.identity,
 );
 
+export type EnvironmentId = t.TypeOf<typeof EnvironmentId>;
+
 export const AgentId = new t.Type<string, string, unknown>(
   "AgentId",
   (input: unknown): input is string => typeof input === "string" && /\bdev_ag_\w{8}\b/g.test(input),
@@ -65,6 +71,8 @@ export const AgentId = new t.Type<string, string, unknown>(
       : t.failure(input, context),
   t.identity,
 );
+
+export type AgentId = t.TypeOf<typeof AgentId>;
 
 export const EventId = new t.Type<string, string, unknown>(
   "EventId",
@@ -77,6 +85,8 @@ export const EventId = new t.Type<string, string, unknown>(
   t.identity,
 );
 
+export type EventId = t.TypeOf<typeof EventId>;
+
 export const SpaceId = new t.Type<string, string, unknown>(
   "SpaceId",
   (input: unknown): input is string => typeof input === "string" && /\bdev_sp_\w{8}\b/g.test(input),
@@ -86,6 +96,8 @@ export const SpaceId = new t.Type<string, string, unknown>(
       : t.failure(input, context),
   t.identity,
 );
+
+export type SpaceId = t.TypeOf<typeof SpaceId>;
 
 export const SpaceConfigId = new t.Type<string, string, unknown>(
   "SpaceConfigId",
@@ -97,6 +109,8 @@ export const SpaceConfigId = new t.Type<string, string, unknown>(
   t.identity,
 );
 
+export type SpaceConfigId = t.TypeOf<typeof SpaceConfigId>;
+
 export const DocumentId = new t.Type<string, string, unknown>(
   "DocumentId",
   (input: unknown): input is string => typeof input === "string" && /\bdev_dc_\w{8}\b/g.test(input),
@@ -106,6 +120,8 @@ export const DocumentId = new t.Type<string, string, unknown>(
       : t.failure(input, context),
   t.identity,
 );
+
+export type DocumentId = t.TypeOf<typeof DocumentId>;
 
 export const WorkbookId = new t.Type<string, string, unknown>(
   "WorkbookId",
@@ -117,6 +133,8 @@ export const WorkbookId = new t.Type<string, string, unknown>(
   t.identity,
 );
 
+export type WorkbookId = t.TypeOf<typeof WorkbookId>;
+
 export const SheetId = new t.Type<string, string, unknown>(
   "SheetId",
   (input: unknown): input is string => typeof input === "string" && /\bdev_sh_\w{8}\b/g.test(input),
@@ -126,6 +144,8 @@ export const SheetId = new t.Type<string, string, unknown>(
       : t.failure(input, context),
   t.identity,
 );
+
+export type SheetId = t.TypeOf<typeof SheetId>;
 
 /*
  * Codecs
@@ -214,13 +234,6 @@ export const createSpaceCodec = t.type({
 });
 
 export type Space = t.TypeOf<typeof spaceCodec>;
-
-// export const workbookConfigCodec = t.type({
-//   name: t.string,
-//   spaceId: t.string,
-//   environmentId: t.string,
-//   sheets: t.readonlyArray(),
-// });
 
 const constraintCodec = t.type({
   type: t.union([t.literal("required"), t.literal("unique")]),
@@ -334,7 +347,6 @@ export const workbookCodec = t.type({
   spaceId: SpaceId,
   environmentId: EnvironmentId,
   sheets: t.readonlyArray(sheetCodec),
-  //config: workbookConfigCodec,
 });
 
 export type Workbook = t.TypeOf<typeof workbookCodec>;
@@ -347,10 +359,10 @@ export const createWorkbookCodec = t.type({
   data: workbookCodec,
 });
 
-export const createWorkbookEncoder = t.type({
+export const workbookInputCodec = t.type({
   name: t.string,
-  spaceId: t.string,
-  environmentId: t.string,
+  spaceId: SpaceId,
+  environmentId: EnvironmentId,
   sheets: t.readonlyArray(
     t.type({
       name: t.string,
@@ -361,4 +373,4 @@ export const createWorkbookEncoder = t.type({
   ),
 });
 
-export type WorkbookInput = t.TypeOf<typeof createWorkbookEncoder>;
+export type WorkbookInput = t.TypeOf<typeof workbookInputCodec>;

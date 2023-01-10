@@ -5,9 +5,14 @@ import * as Str from "fp-ts/string";
 
 import {
   Environment,
+  EnvironmentId,
   Space,
+  SpaceConfigId,
+  SpaceId,
   User,
   Workbook,
+  WorkbookId,
+  WorkbookInput,
   createEnvironmentCodec,
   createSpaceCodec,
   createTokenCodec,
@@ -17,7 +22,6 @@ import {
   listSpacesCodec,
   listUsersCodec,
   listWorkbooksCodec,
-  WorkbookInput,
 } from "./decode";
 import { HttpJsonError } from "./httpError";
 import { getJson, postJson, AppEnv } from "./httpClient";
@@ -81,9 +85,9 @@ export const listSpaces = (): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readon
 };
 
 export const createSpace = (input: {
-  spaceConfigId: Readonly<string>;
-  environmentId: Readonly<string>;
-  primaryWorkbookId?: Readonly<string>;
+  spaceConfigId: Readonly<SpaceConfigId>;
+  environmentId: Readonly<EnvironmentId>;
+  primaryWorkbookId?: Readonly<WorkbookId>;
   name?: Readonly<string>;
 }): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Space>> => {
   return pipe(
@@ -93,7 +97,7 @@ export const createSpace = (input: {
 };
 
 export const listWorkbooks = (params: {
-  spaceId: Readonly<string>;
+  spaceId: Readonly<SpaceId>;
 }): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<Workbook>> => {
   const endpoint = Str.Monoid.concat("workbooks", _serializeParams(params));
 
