@@ -5,7 +5,7 @@ import * as Str from "fp-ts/string";
 import * as TE from "fp-ts/TaskEither";
 import { pipe } from "fp-ts/function";
 
-import { HttpDecodeError } from "./decode";
+import { HttpDecodeError } from "./codecs";
 import {
   HttpJsonError,
   HttpRequestError,
@@ -13,7 +13,10 @@ import {
   mkHttpResponseStatusError,
 } from "./httpError";
 
-// https://andywhite.xyz/posts/2021-01-28-rte-react/
+/*
+ * Credit to Andy White's blog post
+ * https://andywhite.xyz/posts/2021-01-28-rte-react/
+ */
 
 /*
  * Types

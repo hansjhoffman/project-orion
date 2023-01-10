@@ -3,32 +3,7 @@ import * as RTE from "fp-ts/ReaderTaskEither";
 import { pipe } from "fp-ts/function";
 import * as Str from "fp-ts/string";
 
-import {
-  Agent,
-  AgentInput,
-  Environment,
-  EnvironmentId,
-  Event,
-  Space,
-  SpaceConfigId,
-  SpaceId,
-  User,
-  Workbook,
-  WorkbookId,
-  WorkbookInput,
-  createAgentCodec,
-  createEnvironmentCodec,
-  createSpaceCodec,
-  createTokenCodec,
-  createWorkbookCodec,
-  decodeWithCodec,
-  listAgentsCodec,
-  listEnvironmentsCodec,
-  listEventsCodec,
-  listSpacesCodec,
-  listUsersCodec,
-  listWorkbooksCodec,
-} from "./decode";
+import * as C from "./codecs";
 import { HttpJsonError } from "./httpError";
 import { getJson, postJson, AppEnv } from "./httpClient";
 
@@ -49,15 +24,15 @@ export const createToken = (input: {
         clientId: input.clientId,
         secret: input.secret,
       },
-      decodeWithCodec(createTokenCodec),
+      C.decodeWithCodec(C.createTokenCodec),
     ),
     RTE.map(({ data }) => data.accessToken),
   );
 };
 
-export const listUsers = (): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<User>> => {
+export const listUsers = (): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<C.User>> => {
   return pipe(
-    getJson("users", decodeWithCodec(listUsersCodec)),
+    getJson("users", C.decodeWithCodec(C.listUsersCodec)),
     RTE.map(({ data }) => data),
   );
 };
@@ -65,10 +40,10 @@ export const listUsers = (): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonl
 export const listEnvironments = (): RTE.ReaderTaskEither<
   AppEnv,
   HttpJsonError,
-  ReadonlyArray<Environment>
+  ReadonlyArray<C.Environment>
 > => {
   return pipe(
-    getJson("environments", decodeWithCodec(listEnvironmentsCodec)),
+    getJson("environments", C.decodeWithCodec(C.listEnvironmentsCodec)),
     RTE.map(({ data }) => data),
   );
 };
@@ -76,82 +51,86 @@ export const listEnvironments = (): RTE.ReaderTaskEither<
 export const createEnvironment = (input: {
   name: Readonly<string>;
   isProd: Readonly<boolean>;
-}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Environment>> => {
+}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<C.Environment>> => {
   return pipe(
-    postJson("environments", input, decodeWithCodec(createEnvironmentCodec)),
+    postJson("environments", input, C.decodeWithCodec(C.createEnvironmentCodec)),
     RTE.map(({ data }) => data),
   );
 };
 
-export const listSpaces = (): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<Space>> => {
+export const listSpaces = (): RTE.ReaderTaskEither<
+  AppEnv,
+  HttpJsonError,
+  ReadonlyArray<C.Space>
+> => {
   return pipe(
-    getJson("spaces", decodeWithCodec(listSpacesCodec)),
+    getJson("spaces", C.decodeWithCodec(C.listSpacesCodec)),
     RTE.map(({ data }) => data),
   );
 };
 
 export const createSpace = (input: {
-  spaceConfigId: Readonly<SpaceConfigId>;
-  environmentId: Readonly<EnvironmentId>;
-  primaryWorkbookId?: Readonly<WorkbookId>;
+  spaceConfigId: Readonly<C.SpaceConfigId>;
+  environmentId: Readonly<C.EnvironmentId>;
+  primaryWorkbookId?: Readonly<C.WorkbookId>;
   name?: Readonly<string>;
-}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Space>> => {
+}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<C.Space>> => {
   return pipe(
-    postJson("spaces", input, decodeWithCodec(createSpaceCodec)),
+    postJson("spaces", input, C.decodeWithCodec(C.createSpaceCodec)),
     RTE.map(({ data }) => data),
   );
 };
 
 export const listWorkbooks = (params: {
-  spaceId: Readonly<SpaceId>;
-}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<Workbook>> => {
+  spaceId: Readonly<C.SpaceId>;
+}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<C.Workbook>> => {
   const endpoint = Str.Monoid.concat("workbooks", _serializeParams(params));
 
   return pipe(
-    getJson(endpoint, decodeWithCodec(listWorkbooksCodec)),
+    getJson(endpoint, C.decodeWithCodec(C.listWorkbooksCodec)),
     RTE.map(({ data }) => data),
   );
 };
 
 export const createWorkbook = (
-  input: Readonly<WorkbookInput>,
-): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Workbook>> => {
+  input: Readonly<C.WorkbookInput>,
+): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<C.Workbook>> => {
   return pipe(
-    postJson("workbooks", input, decodeWithCodec(createWorkbookCodec)),
+    postJson("workbooks", input, C.decodeWithCodec(C.createWorkbookCodec)),
     RTE.map(({ data }) => data),
   );
 };
 
 export const listAgents = (params: {
-  environmentId: Readonly<EnvironmentId>;
-}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<Agent>> => {
+  environmentId: Readonly<C.EnvironmentId>;
+}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<C.Agent>> => {
   return pipe(
-    getJson(`environments/${params.environmentId}/agents`, decodeWithCodec(listAgentsCodec)),
+    getJson(`environments/${params.environmentId}/agents`, C.decodeWithCodec(C.listAgentsCodec)),
     RTE.map(({ data }) => data),
   );
 };
 
 export const createAgent = (
-  input: Readonly<AgentInput>,
+  input: Readonly<C.AgentInput>,
   params: {
-    environmentId: Readonly<EnvironmentId>;
+    environmentId: Readonly<C.EnvironmentId>;
   },
-): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Agent>> => {
+): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<C.Agent>> => {
   return pipe(
     postJson(
       `environments/${params.environmentId}/agents`,
       input,
-      decodeWithCodec(createAgentCodec),
+      C.decodeWithCodec(C.createAgentCodec),
     ),
     RTE.map(({ data }) => data),
   );
 };
 
 export const listEvents = (params: {
-  environmentId: Readonly<EnvironmentId>;
-}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<Event>> => {
+  environmentId: Readonly<C.EnvironmentId>;
+}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<C.Event>> => {
   return pipe(
-    getJson(`environments/${params.environmentId}/events`, decodeWithCodec(listEventsCodec)),
+    getJson(`environments/${params.environmentId}/events`, C.decodeWithCodec(C.listEventsCodec)),
     RTE.map(({ data }) => data),
   );
 };

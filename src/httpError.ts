@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
-import { HttpDecodeError } from "./decode";
+
+import { HttpDecodeError } from "./codecs";
 
 export type HttpRequestError = {
   _tag: "httpRequestError";

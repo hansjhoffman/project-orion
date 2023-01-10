@@ -7,7 +7,7 @@ import { pipe } from "fp-ts/function";
 import { match } from "ts-pattern";
 
 import * as Api from "./api";
-import { CategoryField, DateField, EnvironmentId, SpaceId, workbookInputCodec } from "./decode";
+import { CategoryField, DateField, EnvironmentId, SpaceId, workbookInputCodec } from "./codecs";
 import { HttpClient, AppEnv, HttpRequest } from "./httpClient";
 import { mkHttpRequestError } from "./httpError";
 
@@ -114,8 +114,6 @@ const main = async () => {
             //   { environmentId: EnvironmentId.encode("dev_env_u1pU7m83") },
             // ),
             // RTE.chainIOK((agent) => prettyPrint("\nAgent:", agent)),
-            // Api.listEvents({ environmentId: EnvironmentId.encode("dev_env_u1pU7m83") }),
-            // RTE.chainIOK((events) => prettyPrint("\nEvents:", events)),
             RTE.mapLeft((err) => {
               match(err)
                 .with({ _tag: "httpRequestError" }, ({ error }) =>
