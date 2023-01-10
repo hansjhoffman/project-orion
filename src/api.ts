@@ -4,8 +4,11 @@ import { pipe } from "fp-ts/function";
 import * as Str from "fp-ts/string";
 
 import {
+  Agent,
+  AgentInput,
   Environment,
   EnvironmentId,
+  Event,
   Space,
   SpaceConfigId,
   SpaceId,
@@ -13,12 +16,15 @@ import {
   Workbook,
   WorkbookId,
   WorkbookInput,
+  createAgentCodec,
   createEnvironmentCodec,
   createSpaceCodec,
   createTokenCodec,
   createWorkbookCodec,
   decodeWithCodec,
+  listAgentsCodec,
   listEnvironmentsCodec,
+  listEventsCodec,
   listSpacesCodec,
   listUsersCodec,
   listWorkbooksCodec,
@@ -108,7 +114,7 @@ export const listWorkbooks = (params: {
 };
 
 export const createWorkbook = (
-  input: WorkbookInput,
+  input: Readonly<WorkbookInput>,
 ): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Workbook>> => {
   return pipe(
     postJson("workbooks", input, decodeWithCodec(createWorkbookCodec)),
@@ -116,8 +122,38 @@ export const createWorkbook = (
   );
 };
 
-export const createAgent = () => {};
-export const listAgents = () => {};
+export const listAgents = (params: {
+  environmentId: Readonly<EnvironmentId>;
+}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<Agent>> => {
+  return pipe(
+    getJson(`environments/${params.environmentId}/agents`, decodeWithCodec(listAgentsCodec)),
+    RTE.map(({ data }) => data),
+  );
+};
+
+export const createAgent = (
+  input: Readonly<AgentInput>,
+  params: {
+    environmentId: Readonly<EnvironmentId>;
+  },
+): RTE.ReaderTaskEither<AppEnv, HttpJsonError, Readonly<Agent>> => {
+  return pipe(
+    postJson(
+      `environments/${params.environmentId}/agents`,
+      input,
+      decodeWithCodec(createAgentCodec),
+    ),
+    RTE.map(({ data }) => data),
+  );
+};
+
+export const listEvents = (params: {
+  environmentId: Readonly<EnvironmentId>;
+}): RTE.ReaderTaskEither<AppEnv, HttpJsonError, ReadonlyArray<Event>> => {
+  return pipe(
+    getJson(`environments/${params.environmentId}/events`, decodeWithCodec(listEventsCodec)),
+    RTE.map(({ data }) => data),
+  );
+};
 
 export const createEvent = () => {};
-export const updateEvent = () => {};

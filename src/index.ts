@@ -55,7 +55,7 @@ const main = async () => {
       token,
       E.match(
         () => {
-          throw "Failed to authenticate.";
+          throw "Failed to authenticate!";
         },
         async (accessToken) => {
           const pipelinePromise = pipe(
@@ -103,6 +103,19 @@ const main = async () => {
               }),
             ),
             RTE.chainIOK((workbook) => prettyPrint("\nNew Workbook:", workbook)),
+            // Api.listAgents({ environmentId: EnvironmentId.encode("dev_env_u1pU7m83") }),
+            // RTE.chainIOK((agents) => prettyPrint("\nAgents:", agents)),
+            // Api.createAgent(
+            //   {
+            //     topics: ["upload:completed"],
+            //     compiler: "js",
+            //     source: "module.exports = { routeEvent: async (...args) => { console.log(args) } }",
+            //   },
+            //   { environmentId: EnvironmentId.encode("dev_env_u1pU7m83") },
+            // ),
+            // RTE.chainIOK((agent) => prettyPrint("\nAgent:", agent)),
+            // Api.listEvents({ environmentId: EnvironmentId.encode("dev_env_u1pU7m83") }),
+            // RTE.chainIOK((events) => prettyPrint("\nEvents:", events)),
             RTE.mapLeft((err) => {
               match(err)
                 .with({ _tag: "httpRequestError" }, ({ error }) =>
@@ -126,7 +139,7 @@ const main = async () => {
       ),
     );
   } catch (err) {
-    console.error(`Error: ${err}!`);
+    console.error(`Error: ${err}`);
   }
 };
 

@@ -147,6 +147,59 @@ export const SheetId = new t.Type<string, string, unknown>(
 
 export type SheetId = t.TypeOf<typeof SheetId>;
 
+export const EventTopic = new t.Type<string, string, unknown>(
+  "EventTopic",
+  (input: unknown): input is string =>
+    typeof input === "string" &&
+    /^(?:space|workbook|user|upload|job|records|file)\:(?:added|removed|online|offline|started|failed|completed|waiting|updated|created)$/g.test(
+      input,
+    ),
+  (input, context) =>
+    typeof input === "string" &&
+    /^(?:space|workbook|user|upload|job|records|file)\:(?:added|removed|online|offline|started|failed|completed|waiting|updated|created)$/g.test(
+      input,
+    )
+      ? t.success(input)
+      : t.failure(input, context),
+  t.identity,
+);
+
+export const FileId = new t.Type<string, string, unknown>(
+  "FileId",
+  (input: unknown): input is string => typeof input === "string" && /\bdev_fl_\w{8}\b/g.test(input),
+  (input, context) =>
+    typeof input === "string" && /\bdev_fl_\w{8}\b/g.test(input)
+      ? t.success(input)
+      : t.failure(input, context),
+  t.identity,
+);
+
+export type FileId = t.TypeOf<typeof FileId>;
+
+export const JobId = new t.Type<string, string, unknown>(
+  "JobId",
+  (input: unknown): input is string => typeof input === "string" && /\bdev_jb_\w{8}\b/g.test(input),
+  (input, context) =>
+    typeof input === "string" && /\bdev_jb_\w{8}\b/g.test(input)
+      ? t.success(input)
+      : t.failure(input, context),
+  t.identity,
+);
+
+export type JobId = t.TypeOf<typeof JobId>;
+
+export const VersionId = new t.Type<string, string, unknown>(
+  "VersionId",
+  (input: unknown): input is string => typeof input === "string" && /\bdev_vr_\w{8}\b/g.test(input),
+  (input, context) =>
+    typeof input === "string" && /\bdev_vr_\w{8}\b/g.test(input)
+      ? t.success(input)
+      : t.failure(input, context),
+  t.identity,
+);
+
+export type VersionId = t.TypeOf<typeof VersionId>;
+
 /*
  * Codecs
  */
@@ -374,3 +427,82 @@ export const workbookInputCodec = t.type({
 });
 
 export type WorkbookInput = t.TypeOf<typeof workbookInputCodec>;
+
+export const agentCodec = t.intersection([
+  t.type({
+    id: AgentId,
+  }),
+  t.partial({
+    topics: t.array(EventTopic),
+    compiler: t.literal("js"),
+    source: t.string,
+  }),
+]);
+
+export type Agent = t.TypeOf<typeof agentCodec>;
+
+export const listAgentsCodec = t.type({
+  data: t.array(agentCodec),
+});
+
+export const agentInputCodec = t.type({
+  topics: t.array(EventTopic),
+  compiler: t.literal("js"),
+  source: t.string,
+});
+
+export type AgentInput = t.TypeOf<typeof agentInputCodec>;
+
+export const createAgentCodec = t.type({
+  data: agentCodec,
+});
+
+export const eventCodec = t.intersection([
+  t.type({
+    id: EventId,
+    domain: t.union([
+      t.literal("file"),
+      t.literal("space"),
+      t.literal("workbook"),
+      t.literal("job"),
+    ]),
+    topic: EventTopic,
+    context: t.intersection([
+      t.type({
+        accountId: AccountId,
+        environmentId: EnvironmentId,
+      }),
+      t.partial({
+        spaceId: SpaceId,
+        workbookId: WorkbookId,
+        sheetId: SheetId,
+        versionId: VersionId,
+        sheetSlug: t.union([t.string, t.null]),
+        jobId: JobId,
+        fileId: FileId,
+        precedingEventId: EventId,
+      }),
+    ]),
+    payload: t.unknown,
+    acknowledgedAt: t.union([t.string, t.null]),
+  }),
+  t.partial({
+    attributes: t.partial({
+      progress: t.partial({
+        current: t.number,
+        total: t.number,
+        percent: t.number,
+      }),
+    }),
+    callbackUrl: t.string,
+    dataUrl: t.string,
+    createdAt: t.string,
+    acknowledgedBy: UserId,
+  }),
+]);
+
+export type Event = t.TypeOf<typeof eventCodec>;
+
+export const listEventsCodec = t.type({
+  data: t.array(eventCodec),
+});
