@@ -26,9 +26,9 @@ export const decodeWithCodec =
 export const UserId = new t.Type<string, string, unknown>(
   "UserId",
   (input: unknown): input is string =>
-    typeof input === "string" && /\bdev_usr_\w{8}\b/g.test(input),
+    typeof input === "string" && /\b(?:dev|us)_usr_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_usr_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_usr_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -39,9 +39,9 @@ export type UserId = t.TypeOf<typeof UserId>;
 export const AccountId = new t.Type<string, string, unknown>(
   "AccountId",
   (input: unknown): input is string =>
-    typeof input === "string" && /\bdev_acc_\w{8}\b/g.test(input),
+    typeof input === "string" && /\b(?:dev|us)_acc_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_acc_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_acc_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -52,9 +52,9 @@ export type AccountId = t.TypeOf<typeof AccountId>;
 export const EnvironmentId = new t.Type<string, string, unknown>(
   "EnvironmentId ",
   (input: unknown): input is string =>
-    typeof input === "string" && /\bdev_env_\w{8}\b/g.test(input),
+    typeof input === "string" && /\b(?:dev|us)_env_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_env_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_env_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -64,9 +64,10 @@ export type EnvironmentId = t.TypeOf<typeof EnvironmentId>;
 
 export const AgentId = new t.Type<string, string, unknown>(
   "AgentId",
-  (input: unknown): input is string => typeof input === "string" && /\bdev_ag_\w{8}\b/g.test(input),
+  (input: unknown): input is string =>
+    typeof input === "string" && /\b(?:dev|us)_ag_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_ag_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_ag_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -77,9 +78,9 @@ export type AgentId = t.TypeOf<typeof AgentId>;
 export const EventId = new t.Type<string, string, unknown>(
   "EventId",
   (input: unknown): input is string =>
-    typeof input === "string" && /\bdev_evt_\w{16}\b/g.test(input),
+    typeof input === "string" && /\b(?:dev|us)_evt_\w{16}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_evt_\w{16}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_evt_\w{16}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -89,9 +90,10 @@ export type EventId = t.TypeOf<typeof EventId>;
 
 export const SpaceId = new t.Type<string, string, unknown>(
   "SpaceId",
-  (input: unknown): input is string => typeof input === "string" && /\bdev_sp_\w{8}\b/g.test(input),
+  (input: unknown): input is string =>
+    typeof input === "string" && /\b(?:dev|us)_sp_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_sp_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_sp_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -101,9 +103,10 @@ export type SpaceId = t.TypeOf<typeof SpaceId>;
 
 export const SpaceConfigId = new t.Type<string, string, unknown>(
   "SpaceConfigId",
-  (input: unknown): input is string => typeof input === "string" && /\bdev_sc_\w{8}\b/g.test(input),
+  (input: unknown): input is string =>
+    typeof input === "string" && /\b(?:dev|us)_sc_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_sc_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_sc_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -113,9 +116,10 @@ export type SpaceConfigId = t.TypeOf<typeof SpaceConfigId>;
 
 export const DocumentId = new t.Type<string, string, unknown>(
   "DocumentId",
-  (input: unknown): input is string => typeof input === "string" && /\bdev_dc_\w{8}\b/g.test(input),
+  (input: unknown): input is string =>
+    typeof input === "string" && /\b(?:dev|us)_dc_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_dc_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_dc_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -125,9 +129,10 @@ export type DocumentId = t.TypeOf<typeof DocumentId>;
 
 export const WorkbookId = new t.Type<string, string, unknown>(
   "WorkbookId",
-  (input: unknown): input is string => typeof input === "string" && /\bdev_wb_\w{8}\b/g.test(input),
+  (input: unknown): input is string =>
+    typeof input === "string" && /\b(?:dev|us)_wb_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_wb_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_wb_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -137,9 +142,10 @@ export type WorkbookId = t.TypeOf<typeof WorkbookId>;
 
 export const SheetId = new t.Type<string, string, unknown>(
   "SheetId",
-  (input: unknown): input is string => typeof input === "string" && /\bdev_sh_\w{8}\b/g.test(input),
+  (input: unknown): input is string =>
+    typeof input === "string" && /\b(?:dev|us)_sh_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_sh_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_sh_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -164,11 +170,14 @@ export const EventTopic = new t.Type<string, string, unknown>(
   t.identity,
 );
 
+export type EventTopic = t.TypeOf<typeof EventTopic>;
+
 export const FileId = new t.Type<string, string, unknown>(
   "FileId",
-  (input: unknown): input is string => typeof input === "string" && /\bdev_fl_\w{8}\b/g.test(input),
+  (input: unknown): input is string =>
+    typeof input === "string" && /\b(?:dev|us)_fl_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_fl_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_fl_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -178,9 +187,10 @@ export type FileId = t.TypeOf<typeof FileId>;
 
 export const JobId = new t.Type<string, string, unknown>(
   "JobId",
-  (input: unknown): input is string => typeof input === "string" && /\bdev_jb_\w{8}\b/g.test(input),
+  (input: unknown): input is string =>
+    typeof input === "string" && /\b(?:dev|us)_jb_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_jb_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_jb_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -190,9 +200,10 @@ export type JobId = t.TypeOf<typeof JobId>;
 
 export const VersionId = new t.Type<string, string, unknown>(
   "VersionId",
-  (input: unknown): input is string => typeof input === "string" && /\bdev_vr_\w{8}\b/g.test(input),
+  (input: unknown): input is string =>
+    typeof input === "string" && /\b(?:dev|us)_vr_\w{8}\b/g.test(input),
   (input, context) =>
-    typeof input === "string" && /\bdev_vr_\w{8}\b/g.test(input)
+    typeof input === "string" && /\b(?:dev|us)_vr_\w{8}\b/g.test(input)
       ? t.success(input)
       : t.failure(input, context),
   t.identity,
@@ -457,15 +468,25 @@ export const createAgentCodec = t.type({
   data: agentCodec,
 });
 
+const EventDomain = t.union([
+  t.literal("file"),
+  t.literal("space"),
+  t.literal("workbook"),
+  t.literal("job"),
+]);
+
+export type EventDomain = t.TypeOf<typeof EventDomain>;
+
 export const eventCodec = t.intersection([
   t.type({
     id: EventId,
-    domain: t.union([
-      t.literal("file"),
-      t.literal("space"),
-      t.literal("workbook"),
-      t.literal("job"),
-    ]),
+    domain: EventDomain,
+    // domain: t.union([
+    //   t.literal("file"),
+    //   t.literal("space"),
+    //   t.literal("workbook"),
+    //   t.literal("job"),
+    // ]),
     topic: EventTopic,
     context: t.intersection([
       t.type({
