@@ -111,7 +111,7 @@ const main = async () => {
             //     compiler: "js",
             //     source: "module.exports = { routeEvent: async (...args) => { console.log(args) } }",
             //   },
-            //   { environmentId: EnvironmentId.encode("dev_env_u1pU7m83") },
+            //   { environmentId: EnvironmentId.encode("us_env_RtTNzRvl") },
             // ),
             // RTE.chainIOK((agent) => prettyPrint("\nAgent:", agent)),
             RTE.mapLeft((err) => {

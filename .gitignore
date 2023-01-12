@@ -21,3 +21,5 @@ coverage
 
 # env
 .envrc
+.envrc.production
+.envrc.staging
