@@ -6,6 +6,7 @@ import * as RTE from "fp-ts/ReaderTaskEither";
 import { pipe } from "fp-ts/function";
 import { match } from "ts-pattern";
 import chalk from "chalk";
+import fs from "fs";
 
 import * as Api from "./api";
 import { CategoryField, DateField, EnvironmentId, SpaceId, workbookInputCodec } from "./codecs";
@@ -110,17 +111,20 @@ const main = async () => {
               Api.listAgents({ environmentId: EnvironmentId.encode("us_env_RtTNzRvl") }),
             ),
             RTE.chainIOK((agents) => prettyPrint("\nAgents:", agents)),
-            RTE.chain(() =>
-              Api.createAgent(
+            RTE.chain(() => {
+              const fileContent: string = fs.readFileSync("./dist/agent.cjs.min.js", {
+                encoding: "utf-8",
+              });
+
+              return Api.createAgent(
                 {
                   topics: ["records:created", "records:updated"],
                   compiler: "js",
-                  source:
-                    "module.exports = { routeEvent: async (...args) => { console.log(JSON.stringify(args, null, 2)) } }",
+                  source: fileContent,
                 },
                 { environmentId: EnvironmentId.encode("us_env_RtTNzRvl") },
-              ),
-            ),
+              );
+            }),
             RTE.chainIOK((agent) => prettyPrint("\nAgent:", agent)),
             RTE.mapLeft((err) => {
               match(err)
