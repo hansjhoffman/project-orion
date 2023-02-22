@@ -19,7 +19,7 @@ export const exampleAgent: FlatfileAgent = {
       .with("workbook", () => {
         match(event.topic)
           .with(P.union("records:created", "records.updated"), () => {
-            console.log(event);
+            console.log("event:", event);
           })
           // .when(
           //   (topic) => topic === "records:created" || topic === "records:updated",
