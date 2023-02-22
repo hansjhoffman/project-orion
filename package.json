@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "axios": "^1.2.1",
+    "chalk": "^5.2.0",
     "fp-ts": "^2.13.1",
     "io-ts": "^2.2.20",
     "ts-pattern": "^4.0.6"
@@ -27,7 +28,7 @@
     "@types/node": "^18.11.14",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
-    "esbuild": "^0.16.4",
+    "esbuild": "^0.17.0",
     "eslint": "^8.29.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",

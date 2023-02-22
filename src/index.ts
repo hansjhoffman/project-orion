@@ -5,6 +5,7 @@ import * as TE from "fp-ts/TaskEither";
 import * as RTE from "fp-ts/ReaderTaskEither";
 import { pipe } from "fp-ts/function";
 import { match } from "ts-pattern";
+import chalk from "chalk";
 
 import * as Api from "./api";
 import { CategoryField, DateField, EnvironmentId, SpaceId, workbookInputCodec } from "./codecs";
@@ -27,7 +28,7 @@ const httpClient: HttpClient = {
 };
 
 const prettyPrint = <A>(preamble: string, data: A) => {
-  return IO.of(console.log(preamble, JSON.stringify(data, null, 2)));
+  return IO.of(console.log(chalk.inverse(preamble), JSON.stringify(data, null, 2)));
 };
 
 const currentEpoch = (): string => {
